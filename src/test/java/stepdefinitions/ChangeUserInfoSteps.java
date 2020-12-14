@@ -1,16 +1,22 @@
 package stepdefinitions;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pages.LoginPage;
 import pages.UserInfoPage;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class ChangeUserInfoSteps {
@@ -49,7 +55,13 @@ public class ChangeUserInfoSteps {
     }
 
     @Then("^User sees \"([^\"]*)\"$")
-    public void userSees(String actionMessage) {
+    public void userSees(String actionMessage) throws IOException {
         Assert.assertEquals(actionMessage, userInfoPage.getUpdateInformation());
+
+        File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        String fileName = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss'-screenshot.png'").format(new Date());
+        FileUtils.copyFile(scrFile, new File("screenshots/"+fileName));
+
+        driver.quit();
     }
 }
